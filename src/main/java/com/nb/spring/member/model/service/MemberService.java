@@ -3,7 +3,7 @@ package com.nb.spring.member.model.service;
 import java.util.List;
 import java.util.Map;
 
-import com.nb.spring.common.DealType;
+import com.nb.spring.common.statusCode.WalletCategoryType;
 import com.nb.spring.member.model.vo.Member;
 import com.nb.spring.member.model.vo.MessageBox;
 import com.nb.spring.member.model.vo.Wallet;
@@ -34,7 +34,7 @@ public interface MemberService {
 	
 	List<Wallet> buySearch(Map param);
 
-	int updateBalance(DealType type, Map<String, Object> param);
+	int updateBalance(WalletCategoryType type, Map<String, Object> param);
 	
 	int updateDeliveryAddress(Map<String,String> param);
 	

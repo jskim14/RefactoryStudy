@@ -1,13 +1,13 @@
 package com.nb.spring.common.statusCode;
 
-public enum DealType {
+public enum WalletCategoryType {
 	DEPOSIT("0"),
 	PAY("1")
 	;
 	
 	private final String status;
 
-	DealType(String status) {
+	WalletCategoryType(String status) {
 		this.status = status;
 	}
 

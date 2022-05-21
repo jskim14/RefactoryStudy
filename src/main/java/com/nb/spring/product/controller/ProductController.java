@@ -8,10 +8,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.Cookie;
@@ -20,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -32,9 +29,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.nb.spring.common.DealType;
-import com.nb.spring.common.ProductType;
-import com.nb.spring.common.WalletType;
+import com.nb.spring.common.statusCode.WalletCategoryType;
+import com.nb.spring.common.statusCode.ProductType;
+import com.nb.spring.common.statusCode.WalletCategoryDetail;
 import com.nb.spring.member.model.service.MemberService;
 import com.nb.spring.member.model.vo.Member;
 import com.nb.spring.product.model.service.ProductService;
@@ -302,7 +299,7 @@ public class ProductController {
 		Member m = memberService.selectMember(loginMember.getMemberNo());
 		
 		
-		if(Integer.parseInt(product.getProductStatus())!=ProductType.SELLING.ordinal()) {
+		if(Integer.parseInt(product.getProductStatus())!=ProductType.ON_SALE.ordinal()) {
 			return msgBuild(mv,"/","입찰중인 상품이 아닙니다.");
 		}
 		
@@ -366,7 +363,7 @@ public class ProductController {
 		
 		Map<String,Object> param = Map.of(
 					"highestBidder", m.getMemberNo(),
-					"productStatus", ProductType.SUCCESS,
+					"productStatus", ProductType.DEPOSIT,
 					"finalPrice", p.getBuyNowPrice(),
 					"productNo",p.getProductNo()
 				);
@@ -379,11 +376,11 @@ public class ProductController {
 			Map<String,Object> param2 = Map.of(
 						"bidPrice", p.getBuyNowPrice(),
 						"memberNo", m.getMemberNo(),
-						"dealType", DealType.OUTPUT,
-						"walletType",WalletType.BUYNOW,
+						"dealType", WalletCategoryType.PAY,
+						"walletType", WalletCategoryDetail.BUYNOW_PRICE,
 						"productNo",p.getProductNo()
 					);
-			result = memberService.updateBalance(DealType.OUTPUT, param2);
+			result = memberService.updateBalance(WalletCategoryType.PAY, param2);
 		}
 		
 		
@@ -452,16 +449,16 @@ public class ProductController {
 			
 			if(result>0) {
 				
-				Map<String, Object> param = Map.of("dealType",DealType.OUTPUT,"amount",bidPrice,"walletType",WalletType.BID,"productNo",product.getProductNo(),"memberNo",m.getMemberNo(),"bidPrice",String.valueOf(bidPrice));
-				result = memberService.updateBalance(DealType.OUTPUT,param);
+				Map<String, Object> param = Map.of("dealType", WalletCategoryType.PAY,"amount",bidPrice,"walletType", WalletCategoryDetail.BID_PRICE,"productNo",product.getProductNo(),"memberNo",m.getMemberNo(),"bidPrice",String.valueOf(bidPrice));
+				result = memberService.updateBalance(WalletCategoryType.PAY,param);
 				
 				if(result>0) {
 					
 					if(exHigher!=null) {
 						
 					
-						param = Map.of("dealType",DealType.INPUT,"amount",exHigherPrice,"walletType",WalletType.FAILURE,"productNo",product.getProductNo(),"memberNo",exHigher.getMemberNo(),"bidPrice",exHigherPrice);
-						result = memberService.updateBalance(DealType.INPUT,param);
+						param = Map.of("dealType", WalletCategoryType.DEPOSIT,"amount",exHigherPrice,"walletType", WalletCategoryDetail.BID_FAILURE,"productNo",product.getProductNo(),"memberNo",exHigher.getMemberNo(),"bidPrice",exHigherPrice);
+						result = memberService.updateBalance(WalletCategoryType.DEPOSIT,param);
 					
 						if(result>0) {
 							return Map.of("result","입찰성공");

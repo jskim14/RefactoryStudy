@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,13 +30,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.nb.spring.common.DealType;
+import com.nb.spring.common.statusCode.WalletCategoryType;
 import com.nb.spring.common.MsgModelView;
 import com.nb.spring.common.PageFactory;
 import com.nb.spring.common.StringHandler;
-import com.nb.spring.common.WalletType;
+import com.nb.spring.common.statusCode.WalletCategoryDetail;
 import com.nb.spring.member.model.service.MemberService;
 import com.nb.spring.member.model.service.SendEmailService;
 import com.nb.spring.member.model.vo.Member;
@@ -576,12 +574,12 @@ public class MemberController {
 		
 		Map<String, Object> param = Map.of(
 										"memberNo",m.getMemberNo(),
-										"dealType",DealType.INPUT,
-										"walletType",WalletType.CHARGE,
+										"dealType", WalletCategoryType.INPUT,
+										"walletType", WalletCategoryDetail.CHARGE,
 										"bidPrice",numAmount,
 										"productNo",""
 									);
-		int result = service.updateBalance(DealType.INPUT, param);
+		int result = service.updateBalance(WalletCategoryType.INPUT, param);
 		
 		if(result>0) {
 			return true;

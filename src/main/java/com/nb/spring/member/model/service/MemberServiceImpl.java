@@ -9,7 +9,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.nb.spring.common.DealType;
+import com.nb.spring.common.statusCode.WalletCategoryType;
 import com.nb.spring.member.model.dao.MemberDao;
 import com.nb.spring.member.model.vo.Member;
 import com.nb.spring.member.model.vo.MessageBox;
@@ -93,7 +93,7 @@ public class MemberServiceImpl implements MemberService {
 
 	
 	@Override
-	public int updateBalance(DealType type, Map<String, Object> param) {
+	public int updateBalance(WalletCategoryType type, Map<String, Object> param) {
 		int result = dao.updateBalance(session, type,param);
 		if(result>0) {
 			result = dao.insertWallet(session,param);

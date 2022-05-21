@@ -7,7 +7,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.nb.spring.common.DealType;
+import com.nb.spring.common.statusCode.WalletCategoryType;
 import com.nb.spring.member.model.vo.Member;
 import com.nb.spring.member.model.vo.MessageBox;
 import com.nb.spring.member.model.vo.Wallet;
@@ -78,9 +78,9 @@ public class MemberDaoImpl implements MemberDao {
 	}
 	
 	@Override
-	public int updateBalance(SqlSessionTemplate session, DealType type, Map<String, Object> param) {
+	public int updateBalance(SqlSessionTemplate session, WalletCategoryType type, Map<String, Object> param) {
 		
-		if(type==DealType.INPUT) {
+		if(type== WalletCategoryType.INPUT) {
 			return session.update("member.plusBalance", param);
 		}else {
 			return session.update("member.minusBalance",param);
