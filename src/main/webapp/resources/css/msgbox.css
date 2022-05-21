@@ -1,0 +1,168 @@
+@charset "UTF-8";
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+a {
+	color: black;
+}
+
+#btn-contaier {
+	display: flex;
+	padding-top: 5px;
+}
+
+.msgBoxBtnActive {
+	width: 150px;
+	height: 30px;
+	margin: 0;
+	padding: 0;
+	background-color: #41B979;
+	color: white;
+	border: none;
+	font-weight: bold;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	cursor: pointer;
+	font-size: 15px;
+}
+
+.msgBoxBtn {
+	width: 150px;
+	height: 30px;
+	margin: 0;
+	padding: 0;
+	background-color: white;
+	color: #41B979;
+	border: 1px solid #41B979;
+	font-weight: bold;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	cursor: pointer;
+	font-size: 15px;
+}
+
+.msgBoxBtn:hover {
+	background-color: #41B979;
+	color: white;
+}
+
+#container {
+	background-color: #41B979;
+	height: 474px;
+	padding-left: 25px;
+}
+
+#container>div>h4 {
+	font-size: 20px;
+	padding: 0;
+}
+
+#container>div>h4, #container>div>p {
+	padding-top: 10px;
+	color: white;
+}
+
+#container>div>p {
+	padding-left: 50px;
+}
+
+#container>div>p>span {
+	font-weight: bold;
+}
+
+table#msgList thead th {
+	border-bottom: 2px solid #41B979;
+	color: #41B979;
+}
+
+table#msgList td, table th {
+	height: 30px;
+}
+
+table#msgList a {
+	text-decoration: none;
+}
+
+table#msgList a:hover {
+	text-decoration: underline;
+}
+
+.checkMsg {
+	color: #808080;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+a.checkMsg {
+	color: #808080;
+}
+
+.uncheckMsg {
+	color: #41B979;
+	font-weight: bold;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+#view-con>button {
+	margin-top: 7px;
+}
+.view-btn {
+		width:50px;
+		background-color: white;
+		color: #41B979;
+		border: none;
+		border-radius: 5px;
+		font-weight: bold;
+	}
+.view-btn-right {
+	float: right;
+}
+textarea {
+	resize: none;
+	border: none;
+	margin-left: 10px;
+	margin-top: 5px;
+}
+textarea:focus {
+	border: none;
+	outline: none;
+}
+#textArea {
+	border: 2px solid #c4c4c4;
+	padding: 5px 0 0 5px;
+}
+
+		.page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: #41B979;
+    border-color: #41B979;
+	}	
+	.page-item.active .page-link {
+	    z-index: 3;
+	    color: #fff;
+	    background-color: #41B979;
+	    border-color: #41B979;
+	}
+	
+	.page-link:hover {
+	    z-index: 2;
+	    color: #41B979;
+	    background-color: #e9ecef;
+	    border-color: #dee2e6;
+	}
+	
+	.page-link {
+	    position: relative;
+	    display: block;
+	    color: #41B979;
+	    text-decoration: none;
+	    background-color: #fff;
+	    border: 1px solid #dee2e6;
+	}

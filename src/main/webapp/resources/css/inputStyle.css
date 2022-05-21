@@ -1,0 +1,159 @@
+@charset "UTF-8";
+/*물품등록*/
+
+
+.aColor {
+    color: black;
+}
+.aColor:hover {
+    color: black;
+}
+
+.btnColor {
+    background-color: #41B979;
+    border-color:#41B979;
+}
+
+.btnP{
+	background-color: #7f47e9;
+    border-color:#7f47e9;
+}
+
+#totalContainer {
+    padding: 15% ;
+}
+
+/* 페이지메뉴의 디브사이 */
+ .pageMenu>form>div[class=pageMenu-1] { 
+    margin-bottom: 5%;
+} 
+
+
+.pageTitle {
+    font-size: 30px;
+    font-weight: 1000;
+    margin-bottom: 5%;
+    text-align:center;
+}
+
+.pageTitle2 {
+    font-size: 35px;
+    font-weight: 1000;
+
+}
+
+.subTitle {
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.subMenu {
+    margin: 1%;
+    padding-left: 2%;
+    display: flex;
+    padding-top: 1%;
+    /* width: 100%; */
+}
+
+.subMenu-1 {
+    margin: 1%;
+    padding-left: 2%;
+}
+
+.subMenuTitle {
+    font-size: 18px;
+    font-weight: 550;
+}
+
+.titleLeft {
+    margin: 0;
+    margin-right: 1%;
+    width: 120px;
+}
+ 
+.titleRight {
+    margin: 0;
+    margin-right: 1%;
+    padding: 0; 
+    width: 100%;
+}
+
+.inputRight {
+    margin: 0;
+    margin-right: 1%;
+    padding: 0; 
+}
+
+.inputNextSpan {
+    margin-left: 1%;
+    margin-top: 0.5%;
+    font-size : 14px;
+}
+
+.timeInput {
+    width: 150px; 
+    display:inline;
+}
+
+/* 라인 */
+.tit_h3.through {
+    padding: 0;
+    margin-bottom: 26px;
+    text-align: center;
+    border: none;
+    background: url(https://www.seoulauction.com/images/bg/bg_dbdbdb.gif) repeat-x 0 50%;
+}
+.tit_h3.through .lineSpan { /*중간글씨*/
+    padding: 0 20px; /* 글씨 옆에 공백 */
+    background: #fff;
+    display: inline-block;
+}
+.tit_h3 {
+    padding-bottom: 13px;
+    margin-bottom: 18px;
+    border-bottom: 2px solid #000;
+}
+
+ .tit_h3 .lineSpan {
+    font-weight: 600;
+    font-size: 25px;
+    line-height: 35px;
+    color: #222;
+    padding-bottom: 10px;
+ }
+
+ /* 마이페이지 */
+ 
+ #myMenuTotal>div {
+     padding-top: 5%; 
+ }
+ 
+ .myMenu {
+     height: 200px;
+     width: 70%;
+     display: flex;
+     
+ }
+ .infobox {
+    height: max-content;
+ }
+
+ #infoLeft {
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+}
+
+.salesState {
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+    text-align: center;
+    margin-top: 5%;
+}
+
+.centerArray {
+    padding-left: 10%;
+    padding-right: 10%;   
+}
+
