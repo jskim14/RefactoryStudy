@@ -22,6 +22,7 @@ public class DirectAccessFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 		if(request.getHeader("referer")==null) {
 			response.sendError(401);
+//			System.out.println("filter error");
 		}else {
 			
 			filterChain.doFilter(request, response);

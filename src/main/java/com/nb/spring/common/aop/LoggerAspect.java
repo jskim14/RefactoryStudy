@@ -13,7 +13,7 @@ public class LoggerAspect {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Around("execution(* com.nb.spring..controller.*Controller.*(..)) or execution(* com.nb.spring..service.*Impl.*(..)) )")
+	@Around("execution(* com.nb.spring..controller.*Controller.*(..)) || execution(* com.nb.spring..service.*Impl.*(..)) )")
 	public Object printLog(ProceedingJoinPoint joinPoint) throws Throwable {
 
 		String type = "";
@@ -27,7 +27,7 @@ public class LoggerAspect {
 
 		}
 
-		logger.debug(type + name + "." + joinPoint.getSignature().getName() + "()");
+//		logger.debug(type + name + "." + joinPoint.getSignature().getName() + "()");
 		return joinPoint.proceed();
 	}
 }

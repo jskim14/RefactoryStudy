@@ -5,6 +5,7 @@ import static com.nb.spring.common.MsgModelView.msgBuild;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -146,45 +147,34 @@ public class ProductController {
 	public String insertProduct() {
 		return "/product/insertProduct";
 	}
-	
-	@RequestMapping(value =  "/insertProductEnd", method=RequestMethod.POST)
-	public ModelAndView insertProductEnd(ModelAndView mv, Product p,
-			 String sellerNo, String maxDate, String maxTime, String unit,
-			 @RequestParam(value = "imageFile", required = false) MultipartFile[] imageFile, HttpServletRequest req) throws Exception {
 
-		System.out.println("시작가 : "+p.getMinBidPrice());
-		System.out.println("즉구 : "+p.getBuyNowPrice());
-		System.out.println(p.getBuyNowPrice().equals("")?true:false);
-		System.out.println(p);
-		
+	public Product insertProductSetting(Product p, String sellerNo, String maxDate, String maxTime,  String unit, MultipartFile[] imageFile, HttpServletRequest req) throws ParseException {
+
 		//buynow
 		if(p.getBuyNowPrice().equals("")) {
 			p.setBuyNowPrice("0");
 		}
-		
-		//date 
+
+		//date
 		String date = maxDate+" "+maxTime;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		Date utilDate = sdf.parse(date);
 		java.sql.Date endDate = new java.sql.Date(utilDate.getTime());
 		p.setEndDate(endDate);
-		
-		//seller 
+
+		//seller
 		p.setSeller(new Member());
 		p.getSeller().setMemberNo(sellerNo);
-		
-		System.out.println("unit:"+ unit);
+
 		//bidUnit
 		if(unit.contains("typing")) {
-			String splitUnit[] = unit.split(",");
-			p.setBidUnit(splitUnit[1]);
+			p.setBidUnit(unit.split(",")[1]);
 		} else {
-			String splitUnit[] = unit.split(",");
-			p.setBidUnit(splitUnit[0]);
+			p.setBidUnit(unit.split(",")[0]);
 		}
-		
+
 		//file
-		String path = req.getServletContext().getRealPath("/resources/upload/product/"); 
+		String path = req.getServletContext().getRealPath("/resources/upload/product/");
 		File f = new File(path);
 		if(!f.exists()) f.mkdir();
 		p.setImages(new ArrayList<ProductImage>());
@@ -192,8 +182,8 @@ public class ProductController {
 			if(!mf.isEmpty()) {
 				String originalFileName = mf.getOriginalFilename();
 				String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
-				
-				SimpleDateFormat sdf2 = new SimpleDateFormat("ddMMyyHHmmssss"); 
+
+				SimpleDateFormat sdf2 = new SimpleDateFormat("ddMMyyHHmmssss");
 				int ranNum = (int)(Math.random()*1000);
 				String renameFile = sdf2.format(System.currentTimeMillis())+"_"+ranNum+ext;
 				try {
@@ -205,7 +195,17 @@ public class ProductController {
 				}
 			}
 		}
-		int result= productService.insertProduct(p);
+		return p;
+	}
+	
+	@PostMapping(value =  "/insertProductEnd")
+	public ModelAndView insertProductEnd(ModelAndView mv, Product p,
+			 String sellerNo, String maxDate, String maxTime, String unit,
+			 @RequestParam(value = "imageFile", required = false) MultipartFile[] imageFile, HttpServletRequest req) throws Exception {
+
+		Product product= insertProductSetting(p, sellerNo, maxDate, maxTime, unit, imageFile, req);
+
+		int result= productService.insertProduct(product);
 		
 		String msg = "";
 		String loc = "";
@@ -415,11 +415,7 @@ public class ProductController {
 		if(highestBidder!=null&&highestBidder.getEmail().equals(m.getEmail())) {
 			return Map.of("result","본인이 최고 입찰자입니다.");
 		}
-		
-		
-		
-		
-		
+
 		log.debug("{}",product);
 		
 		int nowBidPrice = Integer.parseInt(product.getNowBidPrice()==null?"0":product.getNowBidPrice());

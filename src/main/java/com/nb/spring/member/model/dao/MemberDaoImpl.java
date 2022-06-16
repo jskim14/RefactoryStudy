@@ -80,7 +80,7 @@ public class MemberDaoImpl implements MemberDao {
 	@Override
 	public int updateBalance(SqlSessionTemplate session, WalletCategoryType type, Map<String, Object> param) {
 		
-		if(type== WalletCategoryType.INPUT) {
+		if(type== WalletCategoryType.DEPOSIT) {
 			return session.update("member.plusBalance", param);
 		}else {
 			return session.update("member.minusBalance",param);

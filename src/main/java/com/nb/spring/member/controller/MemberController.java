@@ -574,12 +574,12 @@ public class MemberController {
 		
 		Map<String, Object> param = Map.of(
 										"memberNo",m.getMemberNo(),
-										"dealType", WalletCategoryType.INPUT,
-										"walletType", WalletCategoryDetail.CHARGE,
+										"dealType", WalletCategoryType.DEPOSIT,
+										"walletType", WalletCategoryDetail.EMONEY_CHARGE,
 										"bidPrice",numAmount,
 										"productNo",""
 									);
-		int result = service.updateBalance(WalletCategoryType.INPUT, param);
+		int result = service.updateBalance(WalletCategoryType.DEPOSIT, param);
 		
 		if(result>0) {
 			return true;
