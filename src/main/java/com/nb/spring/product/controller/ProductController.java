@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.nb.spring.product.model.vo.InsertProductDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -148,36 +149,36 @@ public class ProductController {
 		return "/product/insertProduct";
 	}
 
-	public Product insertProductSetting(Product p, String sellerNo, String maxDate, String maxTime,  String unit, MultipartFile[] imageFile, HttpServletRequest req) throws ParseException {
+	public Product insertProductSetting(Product product, InsertProductDto insertProductDto, MultipartFile[] imageFile, HttpServletRequest req) throws ParseException {
 
 		//buynow
-		if(p.getBuyNowPrice().equals("")) {
-			p.setBuyNowPrice("0");
+		if(product.getBuyNowPrice().equals("")) {
+			product.setBuyNowPrice("0");
 		}
 
 		//date
-		String date = maxDate+" "+maxTime;
+		String date = insertProductDto.getMaxDate()+" "+insertProductDto.getMaxTime();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		Date utilDate = sdf.parse(date);
 		java.sql.Date endDate = new java.sql.Date(utilDate.getTime());
-		p.setEndDate(endDate);
+		product.setEndDate(endDate);
 
 		//seller
-		p.setSeller(new Member());
-		p.getSeller().setMemberNo(sellerNo);
+		product.setSeller(new Member());
+		product.getSeller().setMemberNo(insertProductDto.getSellerNo());
 
 		//bidUnit
-		if(unit.contains("typing")) {
-			p.setBidUnit(unit.split(",")[1]);
+		if(insertProductDto.getUnit().contains("typing")) {
+			product.setBidUnit(insertProductDto.getUnit().split(",")[1]);
 		} else {
-			p.setBidUnit(unit.split(",")[0]);
+			product.setBidUnit(insertProductDto.getUnit().split(",")[0]);
 		}
 
 		//file
 		String path = req.getServletContext().getRealPath("/resources/upload/product/");
 		File f = new File(path);
 		if(!f.exists()) f.mkdir();
-		p.setImages(new ArrayList<ProductImage>());
+		product.setImages(new ArrayList<ProductImage>());
 		for(MultipartFile mf : imageFile) {
 			if(!mf.isEmpty()) {
 				String originalFileName = mf.getOriginalFilename();
@@ -189,21 +190,20 @@ public class ProductController {
 				try {
 					mf.transferTo(new File(path+renameFile));
 					ProductImage pi = ProductImage.builder().imageName(renameFile).build();
-					p.getImages().add(pi);
+					product.getImages().add(pi);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
 		}
-		return p;
+		return product;
 	}
 	
 	@PostMapping(value =  "/insertProductEnd")
-	public ModelAndView insertProductEnd(ModelAndView mv, Product p,
-			 String sellerNo, String maxDate, String maxTime, String unit,
+	public ModelAndView insertProductEnd(ModelAndView mv, Product product, InsertProductDto insertProductDto,
 			 @RequestParam(value = "imageFile", required = false) MultipartFile[] imageFile, HttpServletRequest req) throws Exception {
 
-		Product product= insertProductSetting(p, sellerNo, maxDate, maxTime, unit, imageFile, req);
+		product= insertProductSetting(product, insertProductDto, imageFile, req);
 
 		int result= productService.insertProduct(product);
 		
