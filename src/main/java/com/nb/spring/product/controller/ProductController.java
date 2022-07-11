@@ -62,6 +62,7 @@ public class ProductController {
 		
 		Member loginMember = (Member)session.getAttribute("loginMember");
 		Product product = productService.selectOneProductNo(productNo);
+		log.info("product = {}",product);
 		
 		if(product==null) return msgBuild(mv, "/", "ERROR-제품번호");
 		
@@ -143,7 +144,7 @@ public class ProductController {
 		return mv;
 	}
 
-	
+	//todo insertProduct
 	@RequestMapping("/insertProduct")
 	public String insertProduct() {
 		return "/product/insertProduct";
@@ -529,6 +530,7 @@ public class ProductController {
 		return Map.of("result",msg);
 	}
 	
+	//todo update
 	@RequestMapping("/updateProduct")
 	public ModelAndView updateProduct(String productNo, ModelAndView mv) {
 		System.out.println("수정" + productNo);
@@ -615,6 +617,7 @@ public class ProductController {
 		return mv;
 	}
 	
+	//todo 대기중 물품 삭제
 	@RequestMapping("/waitingDelete")
 	public ModelAndView waitingDelete(String productNo, HttpSession session, ModelAndView mv) {
 		System.out.println("삭제"+productNo);
@@ -640,6 +643,7 @@ public class ProductController {
 		return mv;
 	}
 	
+	//todo 발송
 	@RequestMapping("/shipping") 
 	public ModelAndView shippingSelect(String productNo, HttpSession session, ModelAndView mv) {
 		System.out.println("발송:"+ productNo);
@@ -660,12 +664,13 @@ public class ProductController {
 		mv.setViewName("/common/msg");
 		return mv;
 	}
-	
+
+	//todo 구매확정
 	@RequestMapping("/buyEnd")
 	public ModelAndView buyEnd(String productNo, HttpSession session, ModelAndView mv) {
 		Member login = (Member)session.getAttribute("loginMember");
 		Product p = productService.selectOneProductNo(productNo);
-		
+
 		int result = productService.buyEnd(productNo);
 		System.out.println(result);
 		String msg = "";
@@ -684,7 +689,8 @@ public class ProductController {
 		mv.setViewName("/common/msg");
 		return mv;
 	}
-	
+
+	//todo 물품재등록
 	@RequestMapping("/reInsertProduct")
 	public ModelAndView reInsertProduct(String productNo, ModelAndView mv) {
 		Product p = productService.updateProduct(productNo);
@@ -767,7 +773,8 @@ public class ProductController {
 		mv.setViewName("/common/msg");
 		return mv;
 	}
-	
+
+	//todo 오늘본상품
 	@RequestMapping("/todayView")
 	public String todayView(@CookieValue(value = "productNum", required = false) Cookie view, Model m) {
 		System.out.println("test");
@@ -787,6 +794,7 @@ public class ProductController {
 		return "/product/todayView";
 	}
 
+	//todo 오늘본상품 삭제
 	@RequestMapping("/todayDelete") 
 	public String todayDelete(@CookieValue(value = "productNum", required = false) Cookie view, HttpServletResponse res, Model m) {
 		System.out.println("delete"+view.getValue());

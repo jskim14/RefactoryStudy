@@ -144,7 +144,8 @@ public class MemberController {
 		mv.setViewName("common/msg");
 		return mv;
 	}
-	
+
+	//todo 마이페이지 메인
 	@RequestMapping("/myPage")
 	public ModelAndView myPage(String memberNo, ModelAndView mv) {
 		Member m = service.selectMember(memberNo);
@@ -425,7 +426,8 @@ public class MemberController {
 	public String loginView() {
 		return "login/loginView";
 	}
-	
+
+	//todo 판매현황
 	@RequestMapping("/salesStates")
 	public ModelAndView salesStates(String memberNo, ModelAndView mv) {
 		List<Product> list = service.salesList(memberNo);
@@ -434,6 +436,7 @@ public class MemberController {
 		return mv;
 	}
 
+	//todo 판매현황 검색
 	@RequestMapping(value = "/salesSearch", method=RequestMethod.POST)
 	public String salesSearch ( @RequestParam(value = "status", required=false ) 
 	String status, String startDate, String endDate, String memberNo, Model m) { //@RequestParam(value = "count") List<Integer> count
@@ -448,7 +451,8 @@ public class MemberController {
 		m.addAttribute("productList",list);
 		return "product/salesStates";
 	}
-	
+
+	//todo 구매현황
 	@RequestMapping("/buyStates")
 	public ModelAndView buyStates(String memberNo, ModelAndView mv) {
 		List<Wallet> buyList = service.buyList(memberNo);
@@ -456,7 +460,8 @@ public class MemberController {
 		mv.setViewName("product/buyStates");
 		return mv;
 	}
-	
+
+	//todo 구매현황 검색
 	@RequestMapping(value = "/buySearch", method=RequestMethod.POST)
 	public String buySearch ( @RequestParam(value = "status", required=false ) 
 	String status, String startDate, String endDate, String memberNo, Model m) {
@@ -589,7 +594,8 @@ public class MemberController {
 		
 		
 	}
-	
+
+	//todo 이머니내역
 	@RequestMapping("/emoneySelectList")
 	public String emoneySelectList(HttpSession session, @RequestParam(value = "btnCategory", required=false ) String category,
 			@RequestParam(name = "cPage",defaultValue = "1") int cPage,
@@ -613,7 +619,8 @@ public class MemberController {
 		m.addAttribute("pageBar", PageFactory.emoneySearch(totalData, cPage, numPerPage, pageBarSize, "emoneySelectList", category));
 		return "login/emoneyDetail";
 	}
-	
+
+	//todo 장바구니
 	@RequestMapping("/myWishList")
 	public ModelAndView myWishList(String memberNo, ModelAndView mv) {
 		List<WishList> list = service.myWishList(memberNo);
@@ -622,7 +629,8 @@ public class MemberController {
 		mv.setViewName("/login/wishList");
 		return mv;
 	}
-	
+
+	//todo 장바구니 삭제
 	@RequestMapping("/deleteWish")
 	public ModelAndView deleteWish(@RequestParam Map<String,String> param, ModelAndView mv) {
 		int result = service.deleteWish(param);
@@ -715,8 +723,8 @@ public class MemberController {
 		out.flush();
 		return "redirect:/";
 	}
-	
-	
+
+	//todo 마이페이지 수정
 	@RequestMapping("/updateMyPage")
 	public String updateMyPage(String memberNo, Model m) {
 		Member member = service.selectMember(memberNo);
@@ -752,7 +760,8 @@ public class MemberController {
 		mv.setViewName("/common/msg");
 		return mv;
 	}
-	
+
+	//todo 비밀번호 수정
 	@RequestMapping("/updatePassword")
 	public String updatePassword() {
 		return "/login/updatePassword";
