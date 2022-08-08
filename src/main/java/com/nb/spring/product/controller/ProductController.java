@@ -25,7 +25,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -149,8 +148,35 @@ public class ProductController {
 	public String insertProduct() {
 		return "/product/insertProduct";
 	}
+	
+	@PostMapping(value =  "/insertProductEnd")
+	public ModelAndView insertProductEnd(ModelAndView mv, Product product, InsertProductDto insertProductDto,
+			 @RequestParam(value = "imageFile", required = false) MultipartFile[] imageFile, HttpServletRequest req) throws Exception {
 
-	public Product insertProductSetting(Product product, InsertProductDto insertProductDto, MultipartFile[] imageFile, HttpServletRequest req) throws ParseException {
+		product= enrollProductSetting(product, insertProductDto, imageFile, req);
+
+		int result= productService.insertProduct(product);
+		
+		String msg = "";
+		String loc = "";
+		
+		if(result>0) {
+			msg = "물품등록이 정상적으로 요청되었습니다.";
+			loc = "/";
+		}else {
+			msg = "물품등록에 실패하였습니다. 관리자에게 문의하세요.";
+			loc = "/product/insertProduct";
+		}
+		
+		mv.addObject("msg",msg);
+		mv.addObject("loc",loc);
+		mv.setViewName("/common/msg");
+		return mv;
+	}
+
+
+
+	public Product enrollProductSetting(Product product, InsertProductDto insertProductDto, MultipartFile[] imageFile, HttpServletRequest req) throws ParseException {
 
 		//buynow
 		if(product.getBuyNowPrice().equals("")) {
@@ -158,22 +184,14 @@ public class ProductController {
 		}
 
 		//date
-		String date = insertProductDto.getMaxDate()+" "+insertProductDto.getMaxTime();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-		Date utilDate = sdf.parse(date);
-		java.sql.Date endDate = new java.sql.Date(utilDate.getTime());
-		product.setEndDate(endDate);
+		utilDateToSqldate(product, insertProductDto);
 
 		//seller
 		product.setSeller(new Member());
 		product.getSeller().setMemberNo(insertProductDto.getSellerNo());
 
 		//bidUnit
-		if(insertProductDto.getUnit().contains("typing")) {
-			product.setBidUnit(insertProductDto.getUnit().split(",")[1]);
-		} else {
-			product.setBidUnit(insertProductDto.getUnit().split(",")[0]);
-		}
+		settingBidUnit(product, insertProductDto);
 
 		//file
 		String path = req.getServletContext().getRealPath("/resources/upload/product/");
@@ -198,31 +216,6 @@ public class ProductController {
 			}
 		}
 		return product;
-	}
-	
-	@PostMapping(value =  "/insertProductEnd")
-	public ModelAndView insertProductEnd(ModelAndView mv, Product product, InsertProductDto insertProductDto,
-			 @RequestParam(value = "imageFile", required = false) MultipartFile[] imageFile, HttpServletRequest req) throws Exception {
-
-		product= insertProductSetting(product, insertProductDto, imageFile, req);
-
-		int result= productService.insertProduct(product);
-		
-		String msg = "";
-		String loc = "";
-		
-		if(result>0) {
-			msg = "물품등록이 정상적으로 요청되었습니다.";
-			loc = "/";
-		}else {
-			msg = "물품등록에 실패하였습니다. 관리자에게 문의하세요.";
-			loc = "/product/insertProduct";
-		}
-		
-		mv.addObject("msg",msg);
-		mv.addObject("loc",loc);
-		mv.setViewName("/common/msg");
-		return mv;
 	}
 
 	@RequestMapping("/realtimeaction")
@@ -503,8 +496,7 @@ public class ProductController {
 		
 		return list;
 	}
-	
-	
+
 	@RequestMapping("/wishList")
 	@ResponseBody
 	public Map wishList(String productNo, String memberNo) {
@@ -541,63 +533,16 @@ public class ProductController {
 	}
 	
 	@PostMapping("/updateProductEnd")
-	public ModelAndView updateProductEnd(ModelAndView mv, Product p,
-			 String sellerNo, String productNum, String maxDate, String maxTime, String unit,
+	public ModelAndView updateProductEnd(ModelAndView mv, Product product,
+			 InsertProductDto insertProductDto,
 			 @RequestParam(value = "imageFile", required = false) MultipartFile[] imageFile, HttpServletRequest req) throws Exception {
-		System.out.println("p.getproductno : " + p.getProductNo());
-		//date 
-		String date = maxDate+" "+maxTime;
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-		Date utilDate = sdf.parse(date);
-		java.sql.Date endDate = new java.sql.Date(utilDate.getTime());
-		p.setEndDate(endDate);
-		
-		//seller 
-		p.setSeller(new Member());
-		p.getSeller().setMemberNo(sellerNo);
-		
-		//productNo
-		p.setProductNo(productNum);
-		System.out.println("p.getproductno : " + p.getProductNo());
-		
-		//bidUnit
-		if(unit.contains(",")) {
-			String splitUnit[] = unit.split(",");
-			p.setBidUnit(splitUnit[1]);
-		} else {
-			p.setBidUnit(unit);
-		}
-		
-		//file
-		String path = req.getServletContext().getRealPath("/resources/upload/product/"); 
-		File f = new File(path);
-		if(!f.exists()) f.mkdir();
-		p.setImages(new ArrayList<ProductImage>());
-		for(MultipartFile mf : imageFile) {
-			if(!mf.isEmpty()) {
-				String originalFileName = mf.getOriginalFilename();
-				String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
-				
-				SimpleDateFormat sdf2 = new SimpleDateFormat("ddMMyyHHmmssss"); 
-				int ranNum = (int)(Math.random()*1000);
-				String renameFile = sdf2.format(System.currentTimeMillis())+"_"+ranNum+ext;
-				try {
-					mf.transferTo(new File(path+renameFile));
-					ProductImage pi = ProductImage.builder().productNo(productNum).imageName(renameFile).build();
-					p.getImages().add(pi);
-					
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		
-		System.out.println("p.getproductno : " + p.getProductNo());
 
-		int imgDelete = productService.imgDelete(productNum);
+		product = enrollProductSetting(product, insertProductDto, imageFile, req);
+
+		int imgDelete = productService.imgDelete(insertProductDto.getProductNum());
 		int result = 0;
 		if(imgDelete>0) {
-			result = productService.updateProductEnd(p);
+			result = productService.updateProductEnd(product);
 		}
 		
 		String msg = "";
@@ -605,10 +550,10 @@ public class ProductController {
 		
 		if(result>0) {
 			msg = "물품등록 수정에 성공하였습니다. ";
-			loc = "/member/salesStates?memberNo="+p.getSeller().getMemberNo();
+			loc = "/member/salesStates?memberNo="+product.getSeller().getMemberNo();
 		}else {
 			msg = "물품등록에 실패하였습니다. 관리자에게 문의하세요.";
-			loc = "/product/updateProduct?productNo="+p.getProductNo();
+			loc = "/product/updateProduct?productNo="+product.getProductNo();
 		}
 		
 		mv.addObject("msg",msg);
@@ -815,6 +760,22 @@ public class ProductController {
 //		todayList.remove(index);
 //		
 	}
-	
+
+	public void utilDateToSqldate(Product product, InsertProductDto insertProductDto) throws ParseException {
+		String date = insertProductDto.getMaxDate()+" "+insertProductDto.getMaxTime();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		Date utilDate = sdf.parse(date);
+		java.sql.Date endDate = new java.sql.Date(utilDate.getTime());
+		product.setEndDate(endDate);
+	}
+
+	public void settingBidUnit(Product product, InsertProductDto insertProductDto) {
+		String[] splitUnit = insertProductDto.getUnit().split(",");
+		if(insertProductDto.getUnit().contains("typing")) {
+			product.setBidUnit(splitUnit[1]);
+		} else {
+			product.setBidUnit(splitUnit[0]);
+		}
+	}
 
 }

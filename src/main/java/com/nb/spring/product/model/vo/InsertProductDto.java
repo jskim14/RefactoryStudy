@@ -11,5 +11,6 @@ public class InsertProductDto {
     private String maxDate;
     private String maxTime;
     private String unit;
+    private String productNum;
 
 }
