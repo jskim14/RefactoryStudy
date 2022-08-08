@@ -537,11 +537,11 @@ public class ProductController {
 			 InsertProductDto insertProductDto,
 			 @RequestParam(value = "imageFile", required = false) MultipartFile[] imageFile, HttpServletRequest req) throws Exception {
 
+		product.setProductNo(insertProductDto.getProductNo());
 		product = enrollProductSetting(product, insertProductDto, imageFile, req);
 
-		int imgDelete = productService.imgDelete(insertProductDto.getProductNum());
 		int result = 0;
-		if(imgDelete>0) {
+		if(imgDelete(insertProductDto.getProductNo())>0) {
 			result = productService.updateProductEnd(product);
 		}
 		
@@ -566,13 +566,13 @@ public class ProductController {
 	@RequestMapping("/waitingDelete")
 	public ModelAndView waitingDelete(String productNo, HttpSession session, ModelAndView mv) {
 		System.out.println("삭제"+productNo);
-		Member login = (Member)session.getAttribute("loginMember");
-		int imgDelete = productService.imgDelete(productNo);
+
 		int result = 0;
-		if(imgDelete>0) {
+		if(imgDelete(productNo) > 0) {
 			result = productService.waitingDelete(productNo);
 		}
-		
+
+		Member login = (Member)session.getAttribute("loginMember");
 		String msg = "";
 		String loc = "/member/salesStates?memberNo="+login.getMemberNo();
 		
@@ -696,9 +696,8 @@ public class ProductController {
 			}
 		}
 		
-		int imgDelete = productService.imgDelete(productNum);
 		int result = 0;
-		if(imgDelete>0) {
+		if(imgDelete(productNum)>0) {
 			result = productService.reInsertEnd(p);
 		}
 		
@@ -771,11 +770,15 @@ public class ProductController {
 
 	public void settingBidUnit(Product product, InsertProductDto insertProductDto) {
 		String[] splitUnit = insertProductDto.getUnit().split(",");
-		if(insertProductDto.getUnit().contains("typing")) {
+		if(insertProductDto.getUnit().contains(",")) {
 			product.setBidUnit(splitUnit[1]);
 		} else {
-			product.setBidUnit(splitUnit[0]);
+			product.setBidUnit(insertProductDto.getUnit());
 		}
+	}
+
+	public int imgDelete(String productNo) {
+		return productService.imgDelete(productNo);
 	}
 
 }

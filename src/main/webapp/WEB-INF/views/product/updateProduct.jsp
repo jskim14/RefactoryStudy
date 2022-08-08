@@ -19,7 +19,7 @@
             <form action="${path }/product/updateProductEnd" method="post" enctype="multipart/form-data">
             <!-- 판매자 -->
             <input type="hidden" name="sellerNo" value="${loginMember.memberNo}" >
-            <input type="hidden" name="productNum" value="${p.productNo }"> 
+            <input type="hidden" name="productNo" value="${p.productNo }">
                 <div class="pageMenu-1">
                     <!-- <div class="subTitle">경매설정</div> -->
                     <div class="tit_h3 through "> 
