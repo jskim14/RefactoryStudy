@@ -3,15 +3,12 @@ package com.nb.spring.member.model.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.nb.spring.member.model.vo.*;
 import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.nb.spring.common.statusCode.WalletCategoryType;
-import com.nb.spring.member.model.vo.Member;
-import com.nb.spring.member.model.vo.MessageBox;
-import com.nb.spring.member.model.vo.Wallet;
-import com.nb.spring.member.model.vo.WishList;
 import com.nb.spring.product.model.vo.Product;
 
 @Repository
@@ -63,8 +60,8 @@ public class MemberDaoImpl implements MemberDao {
 	}
 
 	@Override
-	public List<Product> salesSearch(SqlSessionTemplate session, Map param) {
-		return session.selectList("member.salesSearch", param);
+	public List<Product> salesSearch(SqlSessionTemplate session, SalesSearch salesSearch) {
+		return session.selectList("member.salesSearch", salesSearch);
 	}
 
 	@Override

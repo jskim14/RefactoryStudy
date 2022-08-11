@@ -4,10 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.nb.spring.common.statusCode.WalletCategoryType;
-import com.nb.spring.member.model.vo.Member;
-import com.nb.spring.member.model.vo.MessageBox;
-import com.nb.spring.member.model.vo.Wallet;
-import com.nb.spring.member.model.vo.WishList;
+import com.nb.spring.member.model.vo.*;
 import com.nb.spring.product.model.vo.Product;
 
 public interface MemberService {
@@ -28,7 +25,7 @@ public interface MemberService {
 
 	int updatePassword(Map<String,String> param);
 	
-	List<Product> salesSearch(Map param);
+	List<Product> salesSearch(SalesSearch salesSearch);
 	
 	List<Wallet> buyList(String memberNo);
 	

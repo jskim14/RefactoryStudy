@@ -3,13 +3,10 @@ package com.nb.spring.member.model.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.nb.spring.member.model.vo.*;
 import org.mybatis.spring.SqlSessionTemplate;
 
 import com.nb.spring.common.statusCode.WalletCategoryType;
-import com.nb.spring.member.model.vo.Member;
-import com.nb.spring.member.model.vo.MessageBox;
-import com.nb.spring.member.model.vo.Wallet;
-import com.nb.spring.member.model.vo.WishList;
 import com.nb.spring.product.model.vo.Product;
 
 public interface MemberDao {
@@ -30,7 +27,7 @@ public interface MemberDao {
 
 	int updatePassword(SqlSessionTemplate session, Map<String,String> param);
 
-	List<Product> salesSearch(SqlSessionTemplate session, Map param);
+	List<Product> salesSearch(SqlSessionTemplate session, SalesSearch salesSearch);
 	
 	List<Wallet> buyList(SqlSessionTemplate session, String memberNo);
 	

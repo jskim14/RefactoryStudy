@@ -18,16 +18,12 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.nb.spring.member.model.vo.SalesSearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -431,21 +427,19 @@ public class MemberController {
 	@RequestMapping("/salesStates")
 	public ModelAndView salesStates(String memberNo, ModelAndView mv) {
 		List<Product> list = service.salesList(memberNo);
+		log.info("productList = {}", list);
 		mv.addObject("productList",list);
 		mv.setViewName("product/salesStates");
 		return mv;
 	}
 
 	//todo 판매현황 검색
-	@RequestMapping(value = "/salesSearch", method=RequestMethod.POST)
-	public String salesSearch ( @RequestParam(value = "status", required=false ) 
-	String status, String startDate, String endDate, String memberNo, Model m) { //@RequestParam(value = "count") List<Integer> count
-		Map param = new HashMap<>();
-			param.put("startDate", startDate);
-			param.put("endDate", endDate);
-			param.put("status", status);
-			param.put("memberNo", memberNo);
-		List<Product> list = service.salesSearch(param);
+	@PostMapping(value = "/salesSearch")
+	public String salesSearch (SalesSearch salesSearch ,
+							   @RequestParam(value = "status", required=false )
+	  							Model m) { //@RequestParam(value = "count") List<Integer> count
+
+		List<Product> list = service.salesSearch(salesSearch);
 
 //		m.addAttribute("salesCnt", count);
 		m.addAttribute("productList",list);

@@ -153,6 +153,8 @@ public class ProductController {
 	public ModelAndView insertProductEnd(ModelAndView mv, Product product, InsertProductDto insertProductDto,
 			 @RequestParam(value = "imageFile", required = false) MultipartFile[] imageFile, HttpServletRequest req) throws Exception {
 
+		log.info("---insertProduct start---");
+		log.info("insertProduct = {}",insertProductDto.toString());
 		product= enrollProductSetting(product, insertProductDto, imageFile, req);
 
 		int result= productService.insertProduct(product);
@@ -171,6 +173,7 @@ public class ProductController {
 		mv.addObject("msg",msg);
 		mv.addObject("loc",loc);
 		mv.setViewName("/common/msg");
+		log.info("mv = {}", mv);
 		return mv;
 	}
 
@@ -215,6 +218,7 @@ public class ProductController {
 				}
 			}
 		}
+		log.info("product = {}", product);
 		return product;
 	}
 
@@ -591,7 +595,6 @@ public class ProductController {
 	//todo 발송
 	@RequestMapping("/shipping") 
 	public ModelAndView shippingSelect(String productNo, HttpSession session, ModelAndView mv) {
-		System.out.println("발송:"+ productNo);
 		Member login = (Member)session.getAttribute("loginMember");
 		int result = productService.shippingSelect(productNo);
 		
@@ -617,7 +620,6 @@ public class ProductController {
 		Product p = productService.selectOneProductNo(productNo);
 
 		int result = productService.buyEnd(productNo);
-		System.out.println(result);
 		String msg = "";
 		String loc = "/member/buyStates?memberNo="+login.getMemberNo();
 		

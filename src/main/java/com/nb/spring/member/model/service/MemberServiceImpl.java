@@ -5,16 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.nb.spring.member.model.vo.*;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.nb.spring.common.statusCode.WalletCategoryType;
 import com.nb.spring.member.model.dao.MemberDao;
-import com.nb.spring.member.model.vo.Member;
-import com.nb.spring.member.model.vo.MessageBox;
-import com.nb.spring.member.model.vo.Wallet;
-import com.nb.spring.member.model.vo.WishList;
 import com.nb.spring.product.model.vo.Product;
 
 @Service
@@ -71,8 +68,8 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public List<Product> salesSearch(Map param) {
-		return dao.salesSearch(session, param);
+	public List<Product> salesSearch(SalesSearch salesSearch) {
+		return dao.salesSearch(session, salesSearch);
 	}
 
 	@Override
