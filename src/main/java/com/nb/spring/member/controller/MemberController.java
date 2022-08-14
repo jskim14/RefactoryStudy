@@ -18,8 +18,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.nb.spring.common.statusCode.ProductType;
 import com.nb.spring.member.model.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -163,7 +165,7 @@ public class MemberController {
 					if(p.getProductStatus().equals("1")|| p.getProductStatus().equals("2")||p.getProductStatus().equals("3")) { //판매완료
 						status3++;
 					}
-					if(p.getProductStatus().equals("4") || p.getProductStatus().equals("5")) { //종료
+					if(ProductType.DONE.equals(p.getProductStatus()) || p.getProductStatus().equals(ProductType.REPORT)) { //종료
 						status4++;
 					}
 				}
