@@ -60,7 +60,7 @@ public class MemberDaoImpl implements MemberDao {
 	}
 
 	@Override
-	public List<Product> salesSearch(SqlSessionTemplate session, SalesSearch salesSearch) {
+	public List<Product> salesSearch(SqlSessionTemplate session, SearchDto salesSearch) {
 		return session.selectList("member.salesSearch", salesSearch);
 	}
 
@@ -70,8 +70,8 @@ public class MemberDaoImpl implements MemberDao {
 	}
 
 	@Override
-	public List<Wallet> buySearch(SqlSessionTemplate session, Map param) {
-		return session.selectList("member.buySearch", param);
+	public List<Wallet> buySearch(SqlSessionTemplate session, SearchDto searchDto) {
+		return session.selectList("member.buySearch", searchDto);
 	}
 	
 	@Override

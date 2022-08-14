@@ -27,11 +27,11 @@ public interface MemberDao {
 
 	int updatePassword(SqlSessionTemplate session, Map<String,String> param);
 
-	List<Product> salesSearch(SqlSessionTemplate session, SalesSearch salesSearch);
+	List<Product> salesSearch(SqlSessionTemplate session, SearchDto salesSearch);
 	
 	List<Wallet> buyList(SqlSessionTemplate session, String memberNo);
 	
-	List<Wallet> buySearch(SqlSessionTemplate session, Map param);
+	List<Wallet> buySearch(SqlSessionTemplate session, SearchDto searchDto);
 
 	int updateBalance(SqlSessionTemplate session, WalletCategoryType type, Map<String, Object> param);
 

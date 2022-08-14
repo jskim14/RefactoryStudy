@@ -1,11 +1,10 @@
 package com.nb.spring.member.model.vo;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
-public class SalesSearch {
+public class SearchDto {
 
     private String startDate;
     private String endDate;

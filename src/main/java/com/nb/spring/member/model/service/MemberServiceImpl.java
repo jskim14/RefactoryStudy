@@ -68,7 +68,7 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public List<Product> salesSearch(SalesSearch salesSearch) {
+	public List<Product> salesSearch(SearchDto salesSearch) {
 		return dao.salesSearch(session, salesSearch);
 	}
 
@@ -78,8 +78,8 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public List<Wallet> buySearch(Map param) {
-		return dao.buySearch(session, param);
+	public List<Wallet> buySearch(SearchDto searchDto) {
+		return dao.buySearch(session, searchDto);
 	}
 
 	@Override

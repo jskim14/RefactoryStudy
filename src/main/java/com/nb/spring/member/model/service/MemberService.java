@@ -25,11 +25,11 @@ public interface MemberService {
 
 	int updatePassword(Map<String,String> param);
 	
-	List<Product> salesSearch(SalesSearch salesSearch);
+	List<Product> salesSearch(SearchDto salesSearch);
 	
 	List<Wallet> buyList(String memberNo);
 	
-	List<Wallet> buySearch(Map param);
+	List<Wallet> buySearch(SearchDto searchDto);
 
 	int updateBalance(WalletCategoryType type, Map<String, Object> param);
 	

@@ -18,7 +18,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.nb.spring.member.model.vo.SalesSearch;
+import com.nb.spring.member.model.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -34,9 +34,6 @@ import com.nb.spring.common.StringHandler;
 import com.nb.spring.common.statusCode.WalletCategoryDetail;
 import com.nb.spring.member.model.service.MemberService;
 import com.nb.spring.member.model.service.SendEmailService;
-import com.nb.spring.member.model.vo.Member;
-import com.nb.spring.member.model.vo.Wallet;
-import com.nb.spring.member.model.vo.WishList;
 import com.nb.spring.product.model.vo.Product;
 
 import lombok.extern.slf4j.Slf4j;
@@ -46,8 +43,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/member")
 @SessionAttributes({"loginMember","admin","accessToken" ,"salesCnt","buyCnt","msgCount"})
 public class MemberController {
-	
-	
 	
 	@Autowired
 	private MemberService service;      
@@ -435,13 +430,10 @@ public class MemberController {
 
 	//todo 판매현황 검색
 	@PostMapping(value = "/salesSearch")
-	public String salesSearch (SalesSearch salesSearch ,
-							   @RequestParam(value = "status", required=false )
-	  							Model m) { //@RequestParam(value = "count") List<Integer> count
+	public String salesSearch (SearchDto searchDto , Model m) { //@RequestParam(value = "count") List<Integer> count
 
-		List<Product> list = service.salesSearch(salesSearch);
+		List<Product> list = service.salesSearch(searchDto);
 
-//		m.addAttribute("salesCnt", count);
 		m.addAttribute("productList",list);
 		return "product/salesStates";
 	}
@@ -456,15 +448,9 @@ public class MemberController {
 	}
 
 	//todo 구매현황 검색
-	@RequestMapping(value = "/buySearch", method=RequestMethod.POST)
-	public String buySearch ( @RequestParam(value = "status", required=false ) 
-	String status, String startDate, String endDate, String memberNo, Model m) {
-		Map param = new HashMap<>();
-			param.put("startDate", startDate);
-			param.put("endDate", endDate);
-			param.put("status", status);
-			param.put("memberNo", memberNo);
-		List<Wallet> list = service.buySearch(param);
+	@PostMapping(value = "/buySearch")
+	public String buySearch (SearchDto searchDto, Model m) {
+		List<Wallet> list = service.buySearch(searchDto);
 
 //		m.addAttribute("buyCnt", count);
 //		m.addAttribute("productList",list.get(0).getWalletList());
