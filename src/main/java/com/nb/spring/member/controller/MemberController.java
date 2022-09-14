@@ -194,25 +194,25 @@ public class MemberController {
 			mv.addObject("buyCnt", zeroList);
 		} else {
 			for(Wallet w : buyList) {
-				if(!(w.getCategoryDetail().equals("0"))) {
+				if(!(w.getCategoryDetail().equals(WalletCategoryDetail.SALES_PROFIT.getType()))) {
 					if(w.getProductNo().getProductStatus() != null) {
-						if(w.getProductNo().getProductStatus().equals("0")) {
+						if(w.getProductNo().getProductStatus().equals(ProductType.ON_SALE.getStatus())) {
 							buying++;
 						}
 					}
 					if(w.getProductNo().getProductStatus() != null && w.getProductNo().getFinalPrice() != null) {
-						if((w.getProductNo().getProductStatus().equals("1")
-								||w.getProductNo().getProductStatus().equals("2"))
+						if((w.getProductNo().getProductStatus().equals(ProductType.DEPOSIT.getStatus())
+								||w.getProductNo().getProductStatus().equals(ProductType.SHIPPING.getStatus()))
 								&& w.getProductNo().getFinalPrice().equals(w.getAmount())) { //구매대기
 							waiting++;
 						}
-						if((w.getProductNo().getProductStatus().equals("3")
-								||w.getProductNo().getProductStatus().equals("4")
-								||w.getProductNo().getProductStatus().equals("5"))
+						if((w.getProductNo().getProductStatus().equals(ProductType.ARRIVAL.getStatus())
+								||w.getProductNo().getProductStatus().equals(ProductType.DONE.getStatus())
+								||w.getProductNo().getProductStatus().equals(ProductType.REPORT.getStatus()))
 								&& w.getProductNo().getFinalPrice().equals(w.getAmount()) ) { //종료
 							end++;
 						}
-						if(!(w.getProductNo().getProductStatus().equals("0"))
+						if(!(w.getProductNo().getProductStatus().equals(ProductType.ON_SALE.getStatus()))
 								&& !(w.getProductNo().getFinalPrice().equals(w.getAmount()))) { //종료
 							end++;
 						}
