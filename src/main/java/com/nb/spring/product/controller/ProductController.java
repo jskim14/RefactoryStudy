@@ -297,7 +297,7 @@ public class ProductController {
 		Member m = memberService.selectMember(loginMember.getMemberNo());
 		
 		
-		if(Integer.parseInt(product.getProductStatus())!=ProductType.ON_SALE.ordinal()) {
+		if(!product.getProductStatus().equals(ProductType.ON_SALE.getStatus())) {
 			return msgBuild(mv,"/","입찰중인 상품이 아닙니다.");
 		}
 		
@@ -311,8 +311,7 @@ public class ProductController {
 			return msgBuild(mv, "/", "잔고 부족");
 		}
 		
-		
-		
+
 		String finalDeliveryAddress="";
 		
 		if(radio.equals("ship")) {

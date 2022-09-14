@@ -18,6 +18,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.nb.spring.common.statusCode.PermissionYN;
 import com.nb.spring.common.statusCode.ProductType;
 import com.nb.spring.member.model.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -146,31 +147,36 @@ public class MemberController {
 //		판매
 		List<Product> list = service.salesList(memberNo);
 		int total = list.size();
-		int status1=0;
-		int status2=0;
-		int status3=0;
-		int status4=0;
+		int salesWaiting=0;
+		int onSale=0;
+		int soldOut=0;
+		int salesEnd=0;
 		if(list.isEmpty()) {
 			List<Integer> zeroList = List.of(0,0,0,0,0);
 			mv.addObject("salesCnt", zeroList);
 		} else {
 			for(Product p : list) {
 				if(p.getProductNo() != null) {
-					if(p.getPermissionYn().equals("0") || p.getPermissionYn().equals("2")) { //판매대기
-						status1++;
+					if(p.getPermissionYn().equals(PermissionYN.WAITING.getStatus())
+							|| p.getPermissionYn().equals(PermissionYN.REJECT.getStatus())) { //판매대기
+						salesWaiting++;
 					}
-					if(p.getPermissionYn().equals("1") && p.getProductStatus().equals("0")) { //판매중
-						status2++;
+					if(p.getPermissionYn().equals((PermissionYN.CONFIRM.getStatus()))
+							&& p.getProductStatus().equals(ProductType.ON_SALE.getStatus())) { //판매중
+						onSale++;
 					}
-					if(p.getProductStatus().equals("1")|| p.getProductStatus().equals("2")||p.getProductStatus().equals("3")) { //판매완료
-						status3++;
+					if(p.getProductStatus().equals(ProductType.DEPOSIT.getStatus())
+							|| p.getProductStatus().equals(ProductType.SHIPPING.getStatus())
+							||p.getProductStatus().equals(ProductType.ARRIVAL.getStatus())) { //판매완료
+						soldOut++;
 					}
-					if(ProductType.DONE.equals(p.getProductStatus()) || p.getProductStatus().equals(ProductType.REPORT)) { //종료
-						status4++;
+					if(p.getProductStatus().equals(ProductType.DONE.getStatus())
+							|| p.getProductStatus().equals(ProductType.REPORT.getStatus())) { //종료
+						salesEnd++;
 					}
 				}
 			}
-			List<Integer> salesCnt = List.of(total,status1,status2,status3,status4);
+			List<Integer> salesCnt = List.of(total,salesWaiting,onSale,soldOut,salesEnd);
 			mv.addObject("salesCnt", salesCnt);
 		}
 		
