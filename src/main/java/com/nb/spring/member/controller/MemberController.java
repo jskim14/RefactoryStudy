@@ -319,16 +319,10 @@ public class MemberController {
 		int result = service.insertMember(m);
 		session.removeAttribute("userEmail");
 		if(result > 0) {
-			
-			mv.addObject("msg","회원가입 성공");
-			mv.addObject("loc","/");
-		}else {
-			mv.addObject("msg","회원가입 실패. 다시 시도해주세요.");
-			mv.addObject("loc","/member/enrollMember");
+			return MsgModelView.msgBuild(mv, "/", "회원가입 성공");
 		}
-		mv.setViewName("common/msg");
-		return mv;
-	
+
+		return MsgModelView.msgBuild(mv, "/member/enrollMember" , "회원가입 실패. 다시 시도해주세요.");
 	}
 	
 	@RequestMapping("/findId")
@@ -343,15 +337,9 @@ public class MemberController {
 		log.debug("m = {}",m);
 		
 		if(m==null) {
-			String msg = "없는 회원입니다.";
-			String loc = "/login";
-			mv.addObject("msg", msg);
-			mv.addObject("loc", loc);
-			mv.setViewName("common/msg");
-			return mv;
+			return MsgModelView.msgBuild(mv, "/member/login", "일치하는 회원이 없습니다.");
 		}
 
-		
 		String email = m.getEmail();
 		String id = email.substring(0, email.indexOf("@"));
 		String address = email.substring(email.indexOf("@"));
@@ -368,7 +356,6 @@ public class MemberController {
 		mv.addObject("userId", modifyEmail);
 		mv.addObject("userName",m.getMemberName());
 		mv.setViewName("login/findIdConfirm");
-		
 		
 		return mv;
 	}
@@ -403,12 +390,9 @@ public class MemberController {
 				msg = "임시 비빌번호 발급 실패";
 				loc = "/member/findPassword";
 			}
-			
 		}
-		mv.addObject("msg", msg);
-		mv.addObject("loc", loc);
-		mv.setViewName("common/msg");
-		return mv;
+
+		return MsgModelView.msgBuild(mv, loc, msg);
 	}
 	
 	@RequestMapping("/login")
@@ -486,7 +470,6 @@ public class MemberController {
 		m = service.selectMember(m.getMemberNo());
 		
 		mv.addObject("member", m);
-		
 		mv.setViewName("login/chargeMoney");
 		
 		return mv;
@@ -535,9 +518,6 @@ public class MemberController {
 			BufferedReader change = new BufferedReader(read); // 바이트를 읽기 위해 형변환 버퍼리더는 실제로 형변환을 위해 존제하는 클레스는 아니다.
 			// 받는 부분
 			return change.readLine(); // 문자열로 형변환을 알아서 해주고 찍어낸다 그리고 본인은 비워진다.
-
-
-
 
 		}catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -722,18 +702,14 @@ public class MemberController {
 		int result = service.updateMember(param); //닉네임으로 찾아서 수정 
 		
 		String msg = "";
-		String loc = "/member/myPage?memberNo="+m.getMemberNo();
-		
+
 		if(result>0) {
 			msg = "수정이 완료되었습니다.";
 		} else {
 			msg = "실패하였습니다. 관리자에게 문의하세요.";
 		}
-		
-		mv.addObject("msg",msg);
-		mv.addObject("loc",loc);
-		mv.setViewName("/common/msg");
-		return mv;
+
+		return MsgModelView.msgBuild(mv, "/member/myPage?memberNo="+m.getMemberNo(), msg);
 	}
 
 	//todo 비밀번호 수정
