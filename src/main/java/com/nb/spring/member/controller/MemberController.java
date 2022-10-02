@@ -115,14 +115,10 @@ public class MemberController {
 				mv.addObject("admin",false);
 			}
 			mv.addObject("loginMember", m);
-			mv.addObject("msg","로그인 성공");
-			mv.addObject("loc","/");
-		}else {
-			mv.addObject("msg","로그인 실패, 다시 시도하세요.");
-			mv.addObject("loc","/member/login");
+
+			return MsgModelView.msgBuild(mv, "/", "로그인 성공");
 		}
-		mv.setViewName("common/msg");
-		return mv;
+		return MsgModelView.msgBuild(mv, "/member/login", "로그인 실패, 다시 시도하세요.");
 	}
 	
 	@RequestMapping("/logout")
@@ -131,12 +127,8 @@ public class MemberController {
 			stauts.setComplete();
 		}
 		session.invalidate();
-		String msg = "로그아웃 완료";
-		String loc = "/";
-		mv.addObject("msg", msg);
-		mv.addObject("loc", loc);
-		mv.setViewName("common/msg");
-		return mv;
+
+		return MsgModelView.msgBuild(mv, "/", "로그아웃 완료");
 	}
 
 	//todo 마이페이지 메인
@@ -348,7 +340,7 @@ public class MemberController {
 	public ModelAndView findIdEnd(String name, String phone, ModelAndView mv) {
 		log.debug(name,phone);
 		Member m = service.selectMemberNamePhone(Map.of("name",name,"phone",phone));
-		log.debug("{}",m);
+		log.debug("m = {}",m);
 		
 		if(m==null) {
 			String msg = "없는 회원입니다.";
@@ -358,19 +350,17 @@ public class MemberController {
 			mv.setViewName("common/msg");
 			return mv;
 		}
-		
-		
-		
+
 		
 		String email = m.getEmail();
 		String id = email.substring(0, email.indexOf("@"));
 		String address = email.substring(email.indexOf("@"));
 		String idFront = id.substring(0,id.length()-3);
 		String idEnd = id.substring(id.length()-3);
-		String temp="";
+		String temp= "";
 		
 		for(int i=0; i<idEnd.length();i++) {
-			temp+="*";
+			temp += "*";
 		}
 		
 		String modifyEmail = idFront+temp+address;
@@ -632,11 +622,8 @@ public class MemberController {
 		} else {
 			msg = "실패하였습니다.";
 		}
-		
-		mv.addObject("msg",msg);
-		mv.addObject("loc",loc);
-		mv.setViewName("/common/msg");
-		return mv;
+
+		return MsgModelView.msgBuild(mv, loc, msg);
 	}
 
 	
