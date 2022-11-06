@@ -549,8 +549,7 @@ public class MemberController {
 		}else {
 			return false;
 		}
-		
-		
+
 	}
 
 	//todo 이머니내역

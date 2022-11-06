@@ -35,6 +35,7 @@ dependencies {
     runtimeOnly 'org.springframework.boot:spring-boot-devtools:2.6.2'
     runtimeOnly 'com.oracle.database.jdbc:ojdbc8:21.3.0.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.2'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
 //    providedCompile 'org.springframework.boot:spring-boot-starter-tomcat:2.6.2'
 }
 

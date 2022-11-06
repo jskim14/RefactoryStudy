@@ -18,7 +18,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.nb.spring.common.MsgModelView;
 import com.nb.spring.product.model.vo.InsertProductDto;
+import com.nb.spring.product.module.EnrollProduct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -155,72 +157,20 @@ public class ProductController {
 
 		log.info("---insertProduct start---");
 		log.info("insertProduct = {}",insertProductDto.toString());
-		product= enrollProductSetting(product, insertProductDto, imageFile, req);
+		product= new EnrollProduct().process(product, insertProductDto, imageFile, req);
 
 		int result= productService.insertProduct(product);
-		
-		String msg = "";
-		String loc = "";
-		
-		if(result>0) {
-			msg = "물품등록이 정상적으로 요청되었습니다.";
-			loc = "/";
-		}else {
-			msg = "물품등록에 실패하였습니다. 관리자에게 문의하세요.";
-			loc = "/product/insertProduct";
+
+		if(result > 0) {
+			return MsgModelView.msgBuild(mv, "/", "물품등록이 정상적으로 요청되었습니다.");
 		}
-		
-		mv.addObject("msg",msg);
-		mv.addObject("loc",loc);
-		mv.setViewName("/common/msg");
+
 		log.info("mv = {}", mv);
-		return mv;
+		return MsgModelView.msgBuild(mv, "/product/insertProduct", "물품등록에 실패하였습니다. 관리자에게 문의하세요.");
 	}
 
 
 
-	public Product enrollProductSetting(Product product, InsertProductDto insertProductDto, MultipartFile[] imageFile, HttpServletRequest req) throws ParseException {
-
-		//buynow
-		if(product.getBuyNowPrice().equals("")) {
-			product.setBuyNowPrice("0");
-		}
-
-		//date
-		utilDateToSqldate(product, insertProductDto);
-
-		//seller
-		product.setSeller(new Member());
-		product.getSeller().setMemberNo(insertProductDto.getSellerNo());
-
-		//bidUnit
-		settingBidUnit(product, insertProductDto);
-
-		//file
-		String path = req.getServletContext().getRealPath("/resources/upload/product/");
-		File f = new File(path);
-		if(!f.exists()) f.mkdir();
-		product.setImages(new ArrayList<ProductImage>());
-		for(MultipartFile mf : imageFile) {
-			if(!mf.isEmpty()) {
-				String originalFileName = mf.getOriginalFilename();
-				String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
-
-				SimpleDateFormat sdf2 = new SimpleDateFormat("ddMMyyHHmmssss");
-				int ranNum = (int)(Math.random()*1000);
-				String renameFile = sdf2.format(System.currentTimeMillis())+"_"+ranNum+ext;
-				try {
-					mf.transferTo(new File(path+renameFile));
-					ProductImage pi = ProductImage.builder().imageName(renameFile).build();
-					product.getImages().add(pi);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		log.info("product = {}", product);
-		return product;
-	}
 
 	@RequestMapping("/realtimeaction")
 	public ModelAndView realtimeaction(ModelAndView mv, String productNo) {
@@ -520,8 +470,7 @@ public class ProductController {
 		}else {
 			msg="등록실패";
 		}
-		
-		
+
 		return Map.of("result",msg);
 	}
 	
@@ -529,8 +478,7 @@ public class ProductController {
 	@RequestMapping("/updateProduct")
 	public ModelAndView updateProduct(String productNo, ModelAndView mv) {
 		System.out.println("수정" + productNo);
-		Product p = productService.updateProduct(productNo);
-		mv.addObject("p",p);
+		mv.addObject("p", productService.updateProduct(productNo));
 		mv.setViewName("/product/updateProduct");
 		return mv;
 	}
@@ -541,28 +489,17 @@ public class ProductController {
 			 @RequestParam(value = "imageFile", required = false) MultipartFile[] imageFile, HttpServletRequest req) throws Exception {
 
 		product.setProductNo(insertProductDto.getProductNo());
-		product = enrollProductSetting(product, insertProductDto, imageFile, req);
+		product = new EnrollProduct().process(product, insertProductDto, imageFile, req);
 
 		int result = 0;
 		if(imgDelete(insertProductDto.getProductNo())>0) {
 			result = productService.updateProductEnd(product);
 		}
-		
-		String msg = "";
-		String loc = "";
-		
-		if(result>0) {
-			msg = "물품등록 수정에 성공하였습니다. ";
-			loc = "/member/salesStates?memberNo="+product.getSeller().getMemberNo();
-		}else {
-			msg = "물품등록에 실패하였습니다. 관리자에게 문의하세요.";
-			loc = "/product/updateProduct?productNo="+product.getProductNo();
+
+		if(result > 0) {
+			return MsgModelView.msgBuild(mv, "/member/salesStates?memberNo="+product.getSeller().getMemberNo(), "물품등록 수정에 성공하였습니다.");
 		}
-		
-		mv.addObject("msg",msg);
-		mv.addObject("loc",loc);
-		mv.setViewName("/common/msg");
-		return mv;
+		return MsgModelView.msgBuild(mv, "/product/updateProduct?productNo="+product.getProductNo(), "물품등록에 실패하였습니다. 관리자에게 문의하세요.");
 	}
 	
 	//todo 대기중 물품 삭제
@@ -576,19 +513,13 @@ public class ProductController {
 		}
 
 		Member login = (Member)session.getAttribute("loginMember");
-		String msg = "";
 		String loc = "/member/salesStates?memberNo="+login.getMemberNo();
 		
-		if(result>0) {
-			msg = "물품을 삭제하였습니다.";
-		}else {
-			msg = "물품삭제에 실패하였습니다. 관리자에게 문의하세요.";
+		if(result > 0) {
+			MsgModelView.msgBuild(mv, loc, "물품을 삭제하였습니다.");
 		}
 		
-		mv.addObject("msg",msg);
-		mv.addObject("loc",loc);
-		mv.setViewName("/common/msg");
-		return mv;
+		return MsgModelView.msgBuild(mv, loc, "물품을 삭제할 수 없습니다. 관리자에 문의하세요.");
 	}
 	
 	//todo 발송
@@ -597,50 +528,37 @@ public class ProductController {
 		Member login = (Member)session.getAttribute("loginMember");
 		int result = productService.shippingSelect(productNo);
 		
-		String msg = "";
 		String loc = "/member/salesStates?memberNo="+login.getMemberNo();
 		
-		if(result>0) {
-			msg = "물품발송이 완료되었습니다.";
-		}else {
-			msg = "실패";
+		if(result > 0) {
+			MsgModelView.msgBuild(mv, loc, "물품발송이 완료되었습니다.");
 		}
-		
-		mv.addObject("msg",msg);
-		mv.addObject("loc",loc);
-		mv.setViewName("/common/msg");
-		return mv;
+
+		return MsgModelView.msgBuild(mv, loc, "물품발송이 실패하였습니다. 관리자에 문의하세요.");
 	}
 
 	//todo 구매확정
 	@RequestMapping("/buyEnd")
 	public ModelAndView buyEnd(String productNo, HttpSession session, ModelAndView mv) {
 		Member login = (Member)session.getAttribute("loginMember");
-		Product p = productService.selectOneProductNo(productNo);
+		Product product = productService.selectOneProductNo(productNo);
 
 		int result = productService.buyEnd(productNo);
-		String msg = "";
+		
 		String loc = "/member/buyStates?memberNo="+login.getMemberNo();
 		
-		if(result>0) {
-			msg = "구매가 확정되었습니다.";
-			int deposit = productService.sellerDeposit(p);
-			System.out.println("결과:"+deposit);
-		}else {
-			msg = "실패";
+		if(result > 0) {
+			productService.sellerDeposit(product);
+			return MsgModelView.msgBuild(mv, loc, "구매가 확정되었습니다.");
 		}
 		
-		mv.addObject("msg",msg);
-		mv.addObject("loc",loc);
-		mv.setViewName("/common/msg");
-		return mv;
+		return MsgModelView.msgBuild(mv, loc, "구매확정이 불가능합니다. 관리자에 문의하세요.");
 	}
 
 	//todo 물품재등록
 	@RequestMapping("/reInsertProduct")
 	public ModelAndView reInsertProduct(String productNo, ModelAndView mv) {
-		Product p = productService.updateProduct(productNo);
-		mv.addObject("p",p);
+		mv.addObject("p", productService.updateProduct(productNo));
 		mv.setViewName("/product/reInsertProduct");
 		return mv;
 	}
@@ -750,32 +668,6 @@ public class ProductController {
 		
 		m.addAttribute("list",todayList);
 		return "/product/todayView";
-//		int index = 0;
-//		for(int i=0; i<todayList.size(); i++) {
-//			if(todayList.get(i).getProductNo().equals(productNo)) {
-//				index = i;
-//			}
-//		}
-//		System.out.println(index);
-//		todayList.remove(index);
-//		
-	}
-
-	public void utilDateToSqldate(Product product, InsertProductDto insertProductDto) throws ParseException {
-		String date = insertProductDto.getMaxDate()+" "+insertProductDto.getMaxTime();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-		Date utilDate = sdf.parse(date);
-		java.sql.Date endDate = new java.sql.Date(utilDate.getTime());
-		product.setEndDate(endDate);
-	}
-
-	public void settingBidUnit(Product product, InsertProductDto insertProductDto) {
-		String[] splitUnit = insertProductDto.getUnit().split(",");
-		if(insertProductDto.getUnit().contains(",")) {
-			product.setBidUnit(splitUnit[1]);
-		} else {
-			product.setBidUnit(insertProductDto.getUnit());
-		}
 	}
 
 	public int imgDelete(String productNo) {
